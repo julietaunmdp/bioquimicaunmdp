@@ -46,47 +46,60 @@ const materias = [
   { id: "orientacion_ambiental", nombre: "Orientación Ambiental", cuatri: "6-1", anio: 6, requiere: ["bioquimica_clinica", "toxicologia"] },
 ];
 
-// Función para mostrar materias
+let aprobadas = JSON.parse(localStorage.getItem("aprobadas")) || [];
+
 function render() {
   const contenedor = document.getElementById("malla");
   contenedor.innerHTML = "";
 
-  const materiasPorCuatri = {};
+  const porAnio = {};
+
   materias.forEach(m => {
-    if (!materiasPorCuatri[m.cuatri]) materiasPorCuatri[m.cuatri] = [];
-    materiasPorCuatri[m.cuatri].push(m);
+    if (!porAnio[m.anio]) {
+      porAnio[m.anio] = { "1": [], "2": [] };
+    }
+    const cuatri = m.cuatri.endsWith("1") ? "1" : "2";
+    porAnio[m.anio][cuatri].push(m);
   });
 
-  for (const cuatri in materiasPorCuatri) {
-    const anio = cuatri.split("-")[0];
-    const box = document.createElement("div");
-    box.className = "cuatrimestre";
-    box.dataset.anio = anio;
+  for (const anio in porAnio) {
+    const anioBox = document.createElement("div");
+    anioBox.className = "anio";
+    anioBox.dataset.anio = anio;
+
     const titulo = document.createElement("h2");
-    titulo.textContent = `Año ${anio} – ${cuatri.endsWith("1") ? "1° Cuatrimestre" : "2° Cuatrimestre"}`;
-    const lista = document.createElement("div");
-    lista.className = "materias";
+    titulo.textContent = `Año ${anio}`;
+    anioBox.appendChild(titulo);
 
-    materiasPorCuatri[cuatri].forEach(mat => {
-      const div = document.createElement("div");
-      div.className = "materia";
-      div.textContent = mat.nombre;
-      div.dataset.id = mat.id;
-      lista.appendChild(div);
-    });
+    for (const cuatri of ["1", "2"]) {
+      const cuatriBox = document.createElement("div");
+      cuatriBox.className = "cuatrimestre";
 
-    box.appendChild(titulo);
-    box.appendChild(lista);
-    contenedor.appendChild(box);
+      const h3 = document.createElement("h3");
+      h3.textContent = cuatri === "1" ? "1º Cuatrimestre" : "2º Cuatrimestre";
+      cuatriBox.appendChild(h3);
+
+      const lista = document.createElement("div");
+      lista.className = "materias";
+
+      porAnio[anio][cuatri].forEach(mat => {
+        const div = document.createElement("div");
+        div.className = "materia";
+        div.textContent = mat.nombre;
+        div.dataset.id = mat.id;
+        lista.appendChild(div);
+      });
+
+      cuatriBox.appendChild(lista);
+      anioBox.appendChild(cuatriBox);
+    }
+
+    contenedor.appendChild(anioBox);
   }
 
   aplicarEstado();
 }
 
-// Estado
-let aprobadas = JSON.parse(localStorage.getItem("aprobadas")) || [];
-
-// Lógica para bloquear/desbloquear
 function aplicarEstado() {
   document.querySelectorAll(".materia").forEach(el => {
     const id = el.dataset.id;
@@ -120,5 +133,5 @@ function aplicarEstado() {
   });
 }
 
-// Iniciar
 render();
+
