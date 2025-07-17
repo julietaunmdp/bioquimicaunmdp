@@ -1,0 +1,91 @@
+body {
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background: #f7f7f7;
+  color: #333;
+}
+
+h1 {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+#malla {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.cuatrimestre {
+  background: #fff;
+  border-left: 8px solid #444;
+  padding: 15px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.cuatrimestre h2 {
+  margin-top: 0;
+  font-size: 1.2em;
+  margin-bottom: 10px;
+  color: #222;
+}
+
+.materias {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.materia {
+  padding: 10px 15px;
+  border-radius: 6px;
+  background: #eee;
+  border: 1px solid #ccc;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.materia:hover {
+  background: #ddd;
+}
+
+.materia.bloqueada {
+  background: #f4f4f4;
+  color: #999;
+  cursor: not-allowed;
+  border: 1px dashed #ccc;
+}
+
+.materia.aprobada {
+  background: #c2f0c2;
+  border-color: #6ac36a;
+}
+
+.materia::after {
+  content: "✔";
+  display: none;
+  position: absolute;
+  right: 8px;
+  top: 6px;
+  font-size: 1rem;
+  color: green;
+}
+
+.materia.aprobada::after {
+  display: block;
+}
+
+/* Colores por año */
+.cuatrimestre[data-anio="1"] { border-color: #00bcd4; }
+.cuatrimestre[data-anio="2"] { border-color: #4caf50; }
+.cuatrimestre[data-anio="3"] { border-color: #ff9800; }
+.cuatrimestre[data-anio="4"] { border-color: #e91e63; }
+.cuatrimestre[data-anio="5"] { border-color: #9c27b0; }
+.cuatrimestre[data-anio="6"] { border-color: #607d8b; }
+
+@media (max-width: 600px) {
+  .materias {
+    flex-direction: column;
+  }
+}
